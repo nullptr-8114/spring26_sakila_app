@@ -20,6 +20,12 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Show files
+        run: |
+          pwd
+          ls -la
+          ls -la tests || true
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -31,6 +37,7 @@ jobs:
 
       - name: Verify application import
         run: |
+          python -c "import sys; print(sys.path)"
           python -c "from app import app; print('OK')"
 
       - name: Run tests
