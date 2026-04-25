@@ -1,3 +1,5 @@
+# Configuration updated to support containerized environment
+# Increased timeout for database initialization stability
 # Shahmeer Babar Gill    +      Noor   24th of April, 2026
 import os
 
