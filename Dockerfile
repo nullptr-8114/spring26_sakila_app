@@ -1,9 +1,9 @@
+FROM python:3.9-slim
+
 # Maintainer info and metadata
 LABEL maintainer="shahm@email.com" \
       version="1.0" \
       description="Sakila Flask Application - Optimized"
-
-FROM python:3.9-slim
 
 # Create a non-root user for security
 RUN groupadd -r appuser && useradd -r -g appuser appuser
@@ -13,7 +13,6 @@ WORKDIR /app
 # Copy requirements FIRST to leverage Docker layer caching
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
 # Copy rest of application code
 COPY . .
 
