@@ -1,0 +1,14 @@
+FROM python:3.9
+WORKDIR /app
+COPY . /app
+RUN pip install flask -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+RUN pip install pymysql -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+RUN pip install cryptography -i https://pypi.tuna.tsinghua.edu.cn/simple --trusted-host pypi.tuna.tsinghua.edu.cn
+ENV MYSQL_HOST=localhost
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=supersecretpassword
+ENV MYSQL_DB=sakila
+EXPOSE 5000
+EXPOSE 3306
+EXPOSE 22
+CMD ["python", "app.py"]
