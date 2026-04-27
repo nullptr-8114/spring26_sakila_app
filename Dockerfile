@@ -1,21 +1,36 @@
-# Use an official Python runtime as a base image
+# Maintainer info and metadata
+LABEL maintainer="shahm@email.com" \
+      version="1.0" \
+      description="Sakila Flask Application - Optimized"
+
 FROM python:3.9-slim
 
-# Set the working directory inside the container
+# Create a non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
 WORKDIR /app
 
-# Copy the requirements file into the container at /app
+# Copy requirements FIRST to leverage Docker layer caching
 COPY requirements.txt .
-
-# Install the required Python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of your application into the container
+# Copy rest of application code
 COPY . .
 
-# Expose the port Flask will run on
+# Set ownership to non-root user
+RUN chown -R appuser:appuser /app
+USER appuser
+
+# Environment variables (no secrets hardcoded)
+ENV MYSQL_HOST=sakila-db-server \
+    MYSQL_USER=root \
+    MYSQL_DB=sakila
+
+# Only expose the port the app actually needs
 EXPOSE 5000
 
+# Health check to verify app is responding
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000')" || exit 1
 
-# Run the Flask application
 CMD ["python", "app.py"]
