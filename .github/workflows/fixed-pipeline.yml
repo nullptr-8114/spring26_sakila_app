@@ -1,0 +1,46 @@
+name: Fixed CI Pipeline
+
+on:
+  push:
+    branches: [main]  # Fix 1 & 5: Correct indentation and list format
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Fix 2: Valid runner label
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9" # Fix: Quoted version string
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run Tests
+        # Added PYTHONPATH fix just in case to ensure your app is found
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: pytest -v
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test  # Fix 3: Prevents building if tests fail
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Image
+        run: docker build -t myapp .
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test, build]  # Fix 4: Ensures both CI stages pass before CD
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy
+        run: echo "Deploying to production environment..."
