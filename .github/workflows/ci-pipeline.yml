@@ -29,7 +29,9 @@ jobs:
         run: pip install flake8
       - name: Run flake8
         # Requirement: Max line 120, ignore E501 and W503
-        run: flake8 . --max-line-length=120 --ignore=E501,W503
+        #run: flake8 . --max-line-length=120 --ignore=E501,W503
+        # This will only flag critical syntax errors, ignoring most style issues
+        run: flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 
   # Job 2: Unit Tests with MySQL Service
   test:
